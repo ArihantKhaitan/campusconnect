@@ -1,0 +1,24 @@
+{% extends 'layouts/dashboard_base.html' %}
+
+{% block title %}Delete Event | CampusConnect{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4 p-lg-5 text-center">
+                <div class="mb-4">
+                    <i class="bi bi-exclamation-triangle display-3 text-danger"></i>
+                </div>
+                <h1 class="h3 mb-3">Delete Event</h1>
+                <p class="text-muted mb-4">Are you sure you want to delete <strong>{{ object.title }}</strong>? This action cannot be undone and will remove all registrations and attendance records.</p>
+                <form method="post" class="d-flex gap-2 justify-content-center">
+                    {% csrf_token %}
+                    <a href="{% url 'events:event_detail' object.id %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                    <button type="submit" class="btn btn-danger px-4"><i class="bi bi-trash me-1"></i>Confirm Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

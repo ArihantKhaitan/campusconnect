@@ -1,0 +1,108 @@
+{% extends 'layouts/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Events | CampusConnect{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <h1 class="mb-1">Browse Events</h1>
+        <p class="text-muted mb-0">Explore upcoming and past activities across colleges and clubs.</p>
+    </div>
+    <a href="{% url 'events:event_calendar' %}" class="btn btn-outline-primary"><i class="bi bi-calendar3 me-1"></i>Calendar View</a>
+</div>
+
+<div class="card mb-4 filter-card">
+    <div class="card-body p-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="q" class="form-label">Search</label>
+                <input type="text" name="q" id="q" class="form-control" value="{{ search_query }}" placeholder="Search title, club, college">
+            </div>
+            <div class="col-md-2">
+                <label for="college" class="form-label">College</label>
+                <select name="college" id="college" class="form-select">
+                    <option value="">All colleges</option>
+                    {% for college in colleges %}
+                        <option value="{{ college.id }}" {% if selected_college == college.id|stringformat:'s' %}selected{% endif %}>{{ college.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="category" class="form-label">Category</label>
+                <select name="category" id="category" class="form-select">
+                    <option value="">All categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:'s' %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" name="date" id="date" class="form-control" value="{{ selected_date }}">
+            </div>
+            <div class="col-md-2">
+                <label for="time" class="form-label">Timeline</label>
+                <select name="time" id="time" class="form-select">
+                    <option value="upcoming" {% if selected_time == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                    <option value="past" {% if selected_time == 'past' %}selected{% endif %}>Past</option>
+                    <option value="all" {% if selected_time == 'all' %}selected{% endif %}>All</option>
+                </select>
+            </div>
+            <div class="col-md-1 d-grid">
+                <button type="submit" class="btn btn-primary">Go</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if events %}
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for event in events %}
+    <div class="col">
+        <div class="card h-100 event-card border-0">
+            <div class="event-image-placeholder">
+                {% if event.image %}
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}" class="w-100 h-100 object-fit-cover">
+                {% else %}
+                    <img src="{% static 'images/event-placeholder.svg' %}" alt="Event placeholder" class="w-100 h-100 object-fit-cover">
+                {% endif %}
+                <span class="event-top-badge badge {% if event.end_datetime < now or event.status == 'COMPLETED' or event.status == 'CANCELLED' %}badge-past{% elif event.seats_remaining <= 0 %}badge-full{% else %}badge-upcoming{% endif %}">
+                    {% if event.end_datetime < now or event.status == 'COMPLETED' or event.status == 'CANCELLED' %}PAST{% elif event.seats_remaining <= 0 %}FULL{% else %}UPCOMING{% endif %}
+                </span>
+            </div>
+            <div class="card-body d-flex flex-column p-4">
+                <div class="mb-3">
+                    <div class="small text-muted mb-2">{{ event.club.name }}</div>
+                    <h2 class="h5 card-title mb-0">{{ event.title }}</h2>
+                </div>
+                <div class="metadata-row mb-3">
+                    <span class="metadata-chip"><i class="bi bi-building"></i> {{ event.college.name }}</span>
+                    <span class="metadata-chip"><i class="bi bi-clock"></i> {{ event.start_datetime|date:'d M Y' }}</span>
+                    <span class="metadata-chip"><i class="bi bi-geo-alt"></i> {{ event.venue }}</span>
+                </div>
+                <p class="text-muted small mb-1">{{ event.registered_count|default:event.seats_taken }} / {{ event.participant_limit }} seats filled</p>
+                <p class="text-muted small mb-2">Seats remaining: <strong>{{ event.seats_remaining }}</strong></p>
+                <p class="card-text text-muted">{{ event.description|truncatewords:20 }}</p>
+                <div class="mt-auto d-flex gap-2 flex-wrap">
+                    <a href="{% url 'events:event_detail' event.id %}" class="btn btn-outline-primary">View Details</a>
+                    {% if request.user.role == 'STUDENT' and event.registration_is_open %}
+                        <form method="post" action="{% url 'events:event_register' event.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </form>
+                    {% elif request.user.role == 'STUDENT' %}
+                        <button type="button" class="btn btn-light border" disabled>Register</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <div class="card-body p-4 text-muted">No events found for the selected filters.</div>
+</div>
+{% endif %}
+{% endblock %}

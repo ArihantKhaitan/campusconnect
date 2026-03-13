@@ -1,0 +1,124 @@
+{% extends 'layouts/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Profile | CampusConnect{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">Profile</h1>
+        <p class="text-muted mb-0">Update your account, student details, and profile picture anytime.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-4">
+        <div class="card profile-card h-100">
+            <div class="card-body p-4 p-lg-5 text-center text-xl-start">
+                {% if request.user.profile_picture %}
+                    <img src="{{ request.user.profile_picture.url }}" alt="Profile picture" class="avatar-xl-image mx-auto mx-xl-0 mb-4">
+                {% else %}
+                    <img src="{% static 'images/avatar-placeholder.svg' %}" alt="Default avatar" class="avatar-xl-image mx-auto mx-xl-0 mb-4">
+                {% endif %}
+                <h2 class="h3 mb-1">{{ request.user.get_full_name|default:request.user.username }}</h2>
+                <div class="text-muted mb-4">{{ request.user.get_role_display }}</div>
+
+                <div class="profile-info-list text-start">
+                    <div class="profile-info-item"><div class="profile-field-label">Username</div><div class="fw-semibold">{{ request.user.username }}</div></div>
+                    <div class="profile-info-item"><div class="profile-field-label">Email</div><div class="fw-semibold">{{ request.user.email|default:'-' }}</div></div>
+                    <div class="profile-info-item"><div class="profile-field-label">College</div><div class="fw-semibold">{% if student_profile and student_profile.college %}{{ student_profile.college.name }}{% elif managed_club %}{{ managed_club.college.name }}{% else %}-{% endif %}</div></div>
+                    <div class="profile-info-item"><div class="profile-field-label">Department</div><div class="fw-semibold">{{ student_profile.department.name|default:'-' }}</div></div>
+                    {% if request.user.role == 'STUDENT' %}
+                        <div class="profile-info-item"><div class="profile-field-label">Batch</div><div class="fw-semibold">{{ student_profile.batch|default:'-' }}</div></div>
+                        <div class="profile-info-item"><div class="profile-field-label">Roll No</div><div class="fw-semibold">{{ student_profile.roll_no|default:'-' }}</div></div>
+                        <div class="profile-info-item"><div class="profile-field-label">Registration No</div><div class="fw-semibold">{{ student_profile.registration_no|default:'-' }}</div></div>
+                    {% endif %}
+                    {% if request.user.role == 'CLUB' %}
+                        <div class="profile-info-item"><div class="profile-field-label">Club</div><div class="fw-semibold">{{ managed_club.name|default:'-' }}</div></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8">
+        <div class="card profile-form-card">
+            <div class="card-body p-4 p-lg-5">
+                <div class="mb-4">
+                    <h2 class="h4 mb-1">Edit profile</h2>
+                    <p class="text-muted mb-0">Nothing here is placeholder-only now — you can fill or update these fields later too.</p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="id_profile_picture">Profile picture</label>
+                            {{ form.profile_picture }}
+                            <div class="form-text">Upload a profile image for your account.</div>
+                            <div class="text-danger small mt-1">{{ form.profile_picture.errors }}</div>
+                            {% if request.user.profile_picture %}
+                            <div class="form-check mt-2">
+                                {{ form.remove_profile_picture }}
+                                <label class="form-check-label text-danger" for="id_remove_profile_picture">
+                                    <i class="bi bi-trash me-1"></i>Remove profile picture
+                                </label>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_username">Username</label>
+                            {{ form.username }}
+                            <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_email">Email</label>
+                            {{ form.email }}
+                            <div class="text-danger small mt-1">{{ form.email.errors }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_college">College</label>
+                            {{ form.college }}
+                            <div class="text-danger small mt-1">{{ form.college.errors }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_department">Department</label>
+                            {{ form.department }}
+                            <div class="text-danger small mt-1">{{ form.department.errors }}</div>
+                        </div>
+                        {% if request.user.role == 'STUDENT' %}
+                        <div class="col-md-4">
+                            <label class="form-label" for="id_batch">Batch</label>
+                            {{ form.batch }}
+                            <div class="text-danger small mt-1">{{ form.batch.errors }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="id_roll_no">Roll no</label>
+                            {{ form.roll_no }}
+                            <div class="text-danger small mt-1">{{ form.roll_no.errors }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="id_registration_no">Registration no</label>
+                            {{ form.registration_no }}
+                            <div class="text-danger small mt-1">{{ form.registration_no.errors }}</div>
+                        </div>
+                        {% endif %}
+                        {% if request.user.role == 'CLUB' %}
+                        <div class="col-12">
+                            <label class="form-label" for="id_club">Club</label>
+                            {{ form.club }}
+                            <div class="form-text">Club assignment stays connected to the existing backend management flow.</div>
+                            <div class="text-danger small mt-1">{{ form.club.errors }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                        <a href="{% url 'accounts:dashboard_redirect' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

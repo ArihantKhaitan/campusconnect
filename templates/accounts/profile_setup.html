@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile Setup | CampusConnect{% endblock %}
+{% block body_class %}dark-mode{% endblock %}
+{% block nav %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .setup-shell {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 2rem 0;
+    }
+    .setup-card {
+        border-radius: 1.5rem;
+        border: 1px solid var(--cc-border);
+        background: var(--cc-surface);
+    }
+    .role-group { display: none; }
+    .role-group.show { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container setup-shell">
+    <div class="row justify-content-center w-100">
+        <div class="col-lg-9 col-xl-8">
+            <div class="card shadow-sm setup-card">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+                        <div>
+                            <h1 class="h2 mb-2">Profile Setup</h1>
+                            <p class="text-muted mb-0">Complete this now or skip it and update everything later from your profile page.</p>
+                        </div>
+                    </div>
+                    <form method="post" enctype="multipart/form-data" class="row g-3">
+                        {% csrf_token %}
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_role">Role</label>
+                            {{ form.role }}
+                            {% for error in form.role.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_profile_picture">Profile picture</label>
+                            {{ form.profile_picture }}
+                            {% for error in form.profile_picture.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-md-6 role-group student-only">
+                            <label class="form-label" for="id_first_name">First name</label>
+                            {{ form.first_name }}
+                            {% for error in form.first_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 role-group student-only">
+                            <label class="form-label" for="id_last_name">Last name</label>
+                            {{ form.last_name }}
+                            {% for error in form.last_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 role-group student-only">
+                            <label class="form-label" for="id_college">College</label>
+                            {{ form.college }}
+                            {% for error in form.college.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 role-group student-only">
+                            <label class="form-label" for="id_department">Department</label>
+                            {{ form.department }}
+                            {% for error in form.department.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-4 role-group student-only">
+                            <label class="form-label" for="id_batch">Batch</label>
+                            {{ form.batch }}
+                            {% for error in form.batch.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-4 role-group student-only">
+                            <label class="form-label" for="id_roll_no">Roll no</label>
+                            {{ form.roll_no }}
+                            {% for error in form.roll_no.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-4 role-group student-only">
+                            <label class="form-label" for="id_registration_no">Registration no</label>
+                            {{ form.registration_no }}
+                            {% for error in form.registration_no.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-12 role-group club-only">
+                            <label class="form-label" for="id_club">Club name</label>
+                            {{ form.club }}
+                            {% for error in form.club.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+                            <a href="{% url 'accounts:profile_setup' %}?skip=1" class="btn btn-outline-secondary">Skip for now</a>
+                            <button type="submit" class="btn btn-primary">Save Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const roleSelect = document.getElementById('id_role');
+    const studentFields = document.querySelectorAll('.student-only');
+    const clubFields = document.querySelectorAll('.club-only');
+
+    function updateSetupRoleFields() {
+        const role = roleSelect ? roleSelect.value : 'STUDENT';
+        studentFields.forEach(el => el.classList.toggle('show', role === 'STUDENT'));
+        clubFields.forEach(el => el.classList.toggle('show', role === 'CLUB'));
+    }
+
+    updateSetupRoleFields();
+    if (roleSelect) roleSelect.addEventListener('change', updateSetupRoleFields);
+})();
+</script>
+{% endblock %}

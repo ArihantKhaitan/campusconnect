@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}CampusConnect{% endblock %}
+
+{% block content %}
+<section class="hero-gradient text-white rounded-4 p-5 p-lg-6 shadow mb-5">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+            <h1 class="display-4 fw-bold">CampusConnect</h1>
+            <p class="lead mb-4">Discover and participate in campus events.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'events:event_list' %}" class="btn btn-light btn-lg">Browse Events</a>
+                <a href="{% url 'accounts:signup' %}" class="btn btn-outline-light btn-lg">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h3 class="h5">Find Events</h3>
+                <p class="text-muted mb-0">Browse workshops, competitions, club meetups, and campus celebrations in one place.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h3 class="h5">Join Clubs</h3>
+                <p class="text-muted mb-0">Discover student-led communities and see which clubs are actively organizing new events.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h3 class="h5">Earn Certificates</h3>
+                <p class="text-muted mb-0">Track your participation, mark attendance, and download certificates for completed events.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

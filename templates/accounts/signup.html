@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Signup | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4 p-lg-5">
+                <h1 class="h3 mb-3 text-center">Create your account</h1>
+                <p class="text-muted text-center">Join CampusConnect to discover events and track participation.</p>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_username">Username</label>
+                            {{ form.username }}
+                            <div class="text-danger small">{{ form.username.errors }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_email">Email</label>
+                            {{ form.email }}
+                            <div class="text-danger small">{{ form.email.errors }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_password1">Password</label>
+                            {{ form.password1 }}
+                            <div class="text-danger small">{{ form.password1.errors }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_password2">Confirm Password</label>
+                            {{ form.password2 }}
+                            <div class="text-danger small">{{ form.password2.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

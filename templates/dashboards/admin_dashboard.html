@@ -1,0 +1,122 @@
+{% extends 'layouts/dashboard_base.html' %}
+
+{% block title %}Admin Dashboard | CampusConnect{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">Admin Dashboard</h1>
+        <p class="text-muted mb-0">Monitor the platform, activity, and organization growth.</p>
+    </div>
+    <a href="{% url 'analytics:admin_dashboard' %}" class="btn btn-primary"><i class="bi bi-bar-chart-line me-1"></i> Open Analytics</a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-4">
+        <div class="card stat-card h-100 hover-lift">
+            <div class="card-body p-4">
+                <div class="stat-icon-circle stat-indigo mb-3"><i class="bi bi-people"></i></div>
+                <div class="text-muted small text-uppercase">Total Users</div>
+                <div class="display-6 fw-bold mb-2">{{ total_users }}</div>
+                <p class="text-muted mb-0">All registered accounts on the platform.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card stat-card h-100 hover-lift">
+            <div class="card-body p-4">
+                <div class="stat-icon-circle stat-blue mb-3"><i class="bi bi-mortarboard"></i></div>
+                <div class="text-muted small text-uppercase">Total Students</div>
+                <div class="display-6 fw-bold mb-2">{{ total_students }}</div>
+                <p class="text-muted mb-0">Student accounts active on the platform.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card stat-card h-100 hover-lift">
+            <div class="card-body p-4">
+                <div class="stat-icon-circle stat-green mb-3"><i class="bi bi-diagram-3"></i></div>
+                <div class="text-muted small text-uppercase">Total Clubs</div>
+                <div class="display-6 fw-bold mb-2">{{ total_clubs }}</div>
+                <p class="text-muted mb-0">Active clubs registered across colleges.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card stat-card h-100 hover-lift">
+            <div class="card-body p-4">
+                <div class="stat-icon-circle stat-indigo mb-3"><i class="bi bi-calendar2-event"></i></div>
+                <div class="text-muted small text-uppercase">Total Events</div>
+                <div class="display-6 fw-bold mb-2">{{ total_events }}</div>
+                <p class="text-muted mb-0">Events created across all colleges and clubs.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card stat-card h-100 hover-lift">
+            <div class="card-body p-4">
+                <div class="stat-icon-circle stat-blue mb-3"><i class="bi bi-clipboard-data"></i></div>
+                <div class="text-muted small text-uppercase">Total Registrations</div>
+                <div class="display-6 fw-bold mb-2">{{ total_registrations }}</div>
+                <p class="text-muted mb-0">Registrations processed through CampusConnect.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card stat-card h-100 hover-lift">
+            <div class="card-body p-4">
+                <div class="stat-icon-circle stat-green mb-3"><i class="bi bi-award"></i></div>
+                <div class="text-muted small text-uppercase">Total Certificates</div>
+                <div class="display-6 fw-bold mb-2">{{ total_certificates }}</div>
+                <p class="text-muted mb-0">Certificates issued to participants.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100"><div class="card-body p-4"><div class="text-muted small text-uppercase mb-2">Manage Users</div><a href="{% url 'core:admin_users' %}" class="btn btn-outline-primary btn-sm">Open</a></div></div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100"><div class="card-body p-4"><div class="text-muted small text-uppercase mb-2">Manage Events</div><a href="{% url 'core:admin_events' %}" class="btn btn-outline-primary btn-sm">Open</a></div></div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100"><div class="card-body p-4"><div class="text-muted small text-uppercase mb-2">Manage Certificates</div><a href="{% url 'core:admin_certificates' %}" class="btn btn-outline-primary btn-sm">Open</a></div></div>
+    </div>
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100"><div class="card-body p-4"><div class="text-muted small text-uppercase mb-2">Quick Stats</div><div class="display-6 fw-bold">{{ total_registrations }}</div><div class="text-muted small">Registrations</div></div></div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h4 mb-0">Charts</h2>
+                    <span class="badge status-badge badge-neutral">Platform overview</span>
+                </div>
+                <div class="chart-placeholder d-flex flex-column justify-content-center align-items-center text-center p-4">
+                    <i class="bi bi-graph-up-arrow display-5 text-primary mb-3"></i>
+                    <h3 class="h5 mb-2">Platform trends overview</h3>
+                    <p class="text-muted mb-3">Use this area for registration, attendance, and event growth charts while keeping the backend analytics routes intact.</p>
+                    <a href="{% url 'analytics:admin_dashboard' %}" class="btn btn-outline-primary">Open full analytics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h2 class="h4 mb-3">Management Shortcuts</h2>
+                <div class="d-grid gap-2">
+                    <a href="/admin/organizations/college/" class="btn btn-outline-secondary text-start"><i class="bi bi-building me-2"></i> Manage Colleges ({{ total_colleges }})</a>
+                    <a href="/admin/organizations/club/" class="btn btn-outline-secondary text-start"><i class="bi bi-diagram-3 me-2"></i> Manage Clubs ({{ total_clubs }})</a>
+                    <a href="/admin/" class="btn btn-outline-dark text-start"><i class="bi bi-shield-lock me-2"></i> Admin Panel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

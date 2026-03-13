@@ -1,0 +1,32 @@
+{% extends 'layouts/dashboard_base.html' %}
+
+{% block title %}{% if object %}Edit Event{% else %}Create Event{% endif %} | CampusConnect{% endblock %}
+
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="mb-1">{% if object %}Edit Event{% else %}Create Event{% endif %}</h1>
+        <p class="text-muted mb-0">Manage event details, deadlines, capacity, and image.</p>
+    </div>
+    <a href="{% url 'core:club_dashboard' %}" class="btn btn-outline-secondary">Back to Club Dashboard</a>
+</div>
+<div class="card">
+    <div class="card-body p-4 p-lg-5">
+        <form method="post" enctype="multipart/form-data" class="row g-3">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="col-md-{% if field.name == 'description' or field.name == 'image' %}12{% else %}6{% endif %}">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            {% endfor %}
+            <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                <a href="{% url 'core:club_dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save event</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'layouts/dashboard_base.html' %}
+
+{% block title %}Events Calendar | CampusConnect{% endblock %}
+
+{% block dashboard_content %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">Events Calendar</h1>
+        <p class="text-muted mb-0">See all upcoming and past events in calendar view.</p>
+    </div>
+    <a href="{% url 'events:event_list' %}" class="btn btn-outline-primary">Back to Event List</a>
+</div>
+<div class="card"><div class="card-body p-4"><div id="eventsCalendar"></div></div></div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const calendarEl = document.getElementById('eventsCalendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,listWeek'
+    },
+    events: '{% url "events:event_calendar_feed" %}',
+    eventClick: function(info) {
+      if (info.event.url) {
+        info.jsEvent.preventDefault();
+        window.location.href = info.event.url;
+      }
+    }
+  });
+  calendar.render();
+});
+</script>
+{% endblock %}
