@@ -12,4 +12,6 @@ urlpatterns = [
     path("admin/users/", views.admin_users, name="admin_users"),
     path("admin/events/", views.admin_events, name="admin_events"),
     path("admin/certificates/", views.admin_certificates, name="admin_certificates"),
+    path("admin/colleges/", views.admin_colleges, name="admin_colleges"),
+    path("admin/clubs/", views.admin_clubs, name="admin_clubs"),
 ]

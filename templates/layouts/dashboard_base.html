@@ -35,12 +35,12 @@
                 <a class="nav-link" data-nav-key="dashboard" href="{% url 'core:admin_dashboard' %}"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
                 <a class="nav-link" data-nav-key="analytics" href="{% url 'analytics:admin_dashboard' %}"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
                 <div class="sidebar-divider"></div>
-                <a class="nav-link" href="{% url 'core:admin_users' %}"><i class="bi bi-people"></i><span>Users</span></a>
-                <a class="nav-link" href="{% url 'core:admin_events' %}"><i class="bi bi-calendar-event"></i><span>Events</span></a>
-                <a class="nav-link" href="{% url 'core:admin_certificates' %}"><i class="bi bi-award"></i><span>Certificates</span></a>
+                <a class="nav-link" data-nav-key="users" href="{% url 'core:admin_users' %}"><i class="bi bi-people"></i><span>Users</span></a>
+                <a class="nav-link" data-nav-key="events" href="{% url 'core:admin_events' %}"><i class="bi bi-calendar-event"></i><span>Events</span></a>
+                <a class="nav-link" data-nav-key="certificates" href="{% url 'core:admin_certificates' %}"><i class="bi bi-award"></i><span>Certificates</span></a>
                 <div class="sidebar-divider"></div>
-                <a class="nav-link" href="/admin/organizations/college/"><i class="bi bi-building"></i><span>Colleges</span></a>
-                <a class="nav-link" href="/admin/organizations/club/"><i class="bi bi-diagram-3"></i><span>Clubs</span></a>
+                <a class="nav-link" data-nav-key="colleges" href="{% url 'core:admin_colleges' %}"><i class="bi bi-building"></i><span>Colleges</span></a>
+                <a class="nav-link" data-nav-key="clubs" href="{% url 'core:admin_clubs' %}"><i class="bi bi-diagram-3"></i><span>Clubs</span></a>
                 <a class="nav-link" href="/admin/"><i class="bi bi-shield-lock"></i><span>Admin Panel</span></a>
             {% endif %}
         </nav>
@@ -131,6 +131,10 @@
         var path = window.location.pathname, hash = window.location.hash, key = null;
         if (path.includes('/events/')) { key = path.includes('/create/') ? 'create-event' : 'events'; }
         else if (path.includes('/analytics/')) { key = 'analytics'; }
+        else if (path.includes('/admin/colleges/')) { key = 'colleges'; }
+        else if (path.includes('/admin/clubs/')) { key = 'clubs'; }
+        else if (path.includes('/admin/users/')) { key = 'users'; }
+        else if (path.includes('/admin/certificates/')) { key = 'certificates'; }
         else if (hash === '#registrations') { key = 'registrations'; }
         else if (hash === '#certificates') { key = 'certificates'; }
         else if (hash === '#my-events') { key = 'my-events'; }

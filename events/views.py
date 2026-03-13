@@ -233,7 +233,6 @@ class EventParticipantsView(LoginRequiredMixin, TemplateView):
         return context
 
 
-@method_decorator(club_required, name="dispatch")
 class EventCalendarView(LoginRequiredMixin, TemplateView):
     template_name = "events/event_calendar.html"
     login_url = reverse_lazy("accounts:auth")

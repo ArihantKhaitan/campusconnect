@@ -1,0 +1,49 @@
+{% extends 'layouts/dashboard_base.html' %}
+{% block title %}Colleges | CampusConnect{% endblock %}
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">Colleges</h1>
+        <p class="text-muted mb-0">All registered colleges on the platform.</p>
+    </div>
+    <a href="/admin/organizations/college/add/" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add College</a>
+</div>
+
+<div class="card table-card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>College</th>
+                        <th>Code</th>
+                        <th>Clubs</th>
+                        <th>Events</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for college in colleges %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="stat-icon-circle stat-indigo" style="width:2rem;height:2rem;font-size:0.85rem;flex-shrink:0;"><i class="bi bi-building"></i></div>
+                                <div class="fw-semibold">{{ college.name }}</div>
+                            </div>
+                        </td>
+                        <td><span class="metadata-chip">{{ college.code|default:'—' }}</span></td>
+                        <td>{{ college.club_count }}</td>
+                        <td>{{ college.event_count }}</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" href="/admin/organizations/college/{{ college.id }}/change/">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No colleges found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

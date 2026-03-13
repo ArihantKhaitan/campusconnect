@@ -72,6 +72,23 @@ def admin_certificates(request):
     return render(request, "dashboards/admin_certificates.html", {"certificates": certificates})
 
 
+@admin_required
+def admin_colleges(request):
+    colleges = College.objects.annotate(
+        club_count=Count("clubs", distinct=True),
+        event_count=Count("events", distinct=True),
+    ).order_by("name")
+    return render(request, "dashboards/admin_colleges.html", {"colleges": colleges})
+
+
+@admin_required
+def admin_clubs(request):
+    clubs = Club.objects.select_related("college", "representative").annotate(
+        event_count=Count("events", distinct=True),
+    ).order_by("college__name", "name")
+    return render(request, "dashboards/admin_clubs.html", {"clubs": clubs})
+
+
 @student_required
 def student_dashboard(request):
     registrations = EventRegistration.objects.filter(student=request.user).select_related("event", "event__club", "event__college")

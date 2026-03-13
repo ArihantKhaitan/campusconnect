@@ -1,0 +1,61 @@
+{% extends 'layouts/dashboard_base.html' %}
+{% block title %}Clubs | CampusConnect{% endblock %}
+{% block dashboard_content %}
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">Clubs</h1>
+        <p class="text-muted mb-0">All student clubs across colleges.</p>
+    </div>
+    <a href="/admin/organizations/club/add/" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Club</a>
+</div>
+
+<div class="card table-card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Club</th>
+                        <th>College</th>
+                        <th>Representative</th>
+                        <th>Events</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for club in clubs %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="stat-icon-circle stat-blue" style="width:2rem;height:2rem;font-size:0.85rem;flex-shrink:0;"><i class="bi bi-diagram-3"></i></div>
+                                <div>
+                                    <div class="fw-semibold">{{ club.name }}</div>
+                                    {% if club.description %}<div class="text-muted small">{{ club.description|truncatewords:8 }}</div>{% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ club.college.name }}</td>
+                        <td>
+                            {% if club.representative %}
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="avatar avatar-placeholder" style="width:1.6rem;height:1.6rem;font-size:0.65rem;">{{ club.representative.username|slice:":1"|upper }}</span>
+                                    <span>{{ club.representative.get_full_name|default:club.representative.username }}</span>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">Unassigned</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ club.event_count }}</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" href="/admin/organizations/club/{{ club.id }}/change/">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No clubs found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

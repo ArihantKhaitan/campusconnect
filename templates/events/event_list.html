@@ -3,6 +3,35 @@
 
 {% block title %}Events | CampusConnect{% endblock %}
 
+{% block extra_js %}
+{{ block.super }}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(function () {
+    // Live client-side card filter as the user types in the search box.
+    // The server-side form filter still works unchanged on submit.
+    var $cards = $('#event-cards-grid .col');
+
+    $('#q').on('keyup input', function () {
+        var term = $(this).val().toLowerCase().trim();
+        if (term === '') {
+            $cards.show();
+            $('#event-empty-msg').hide();
+            return;
+        }
+        var visible = 0;
+        $cards.each(function () {
+            var text = $(this).find('.card-title, .small.text-muted, .metadata-chip').text().toLowerCase();
+            var match = text.indexOf(term) !== -1;
+            $(this).toggle(match);
+            if (match) visible++;
+        });
+        $('#event-empty-msg').toggle(visible === 0);
+    });
+});
+</script>
+{% endblock %}
+
 {% block dashboard_content %}
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
     <div>
@@ -57,7 +86,7 @@
 </div>
 
 {% if events %}
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="row row-cols-1 row-cols-md-3 g-4" id="event-cards-grid">
     {% for event in events %}
     <div class="col">
         <div class="card h-100 event-card border-0">
@@ -105,4 +134,7 @@
     <div class="card-body p-4 text-muted">No events found for the selected filters.</div>
 </div>
 {% endif %}
+<div id="event-empty-msg" class="card" style="display:none">
+    <div class="card-body p-4 text-muted">No events match your search.</div>
+</div>
 {% endblock %}
