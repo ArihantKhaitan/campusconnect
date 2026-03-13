@@ -1,69 +1,93 @@
 {% extends 'base.html' %}
 
 {% block body_class %}dashboard-body{% endblock %}
-
 {% block nav %}{% endblock %}
 {% block footer %}{% endblock %}
 
 {% block main_wrapper %}
 <div class="dashboard-layout d-lg-flex">
-    <aside class="dashboard-sidebar p-3 p-lg-4">
-        <a href="{% url 'accounts:dashboard_redirect' %}" class="brand d-inline-flex align-items-center gap-2 mb-4">
-            <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
-            <span>CampusConnect</span>
-        </a>
+    <!-- ===== Sidebar ===== -->
+    <aside class="dashboard-sidebar p-3">
+        <div class="px-1 py-2 mb-3">
+            <a href="{% url 'accounts:dashboard_redirect' %}" class="brand">
+                <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+                <span>CampusConnect</span>
+            </a>
+        </div>
 
         <div class="sidebar-role-label">{{ request.user.get_role_display|default:'Workspace' }}</div>
 
         <nav class="nav flex-column sidebar-nav" id="sidebarNav">
             {% if request.user.role == 'STUDENT' %}
-                <a class="nav-link" data-nav-key="dashboard" href="{% url 'core:student_dashboard' %}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
-                <a class="nav-link" data-nav-key="events" href="{% url 'events:event_list' %}"><i class="bi bi-calendar-event"></i><span>Events</span></a>
-                <a class="nav-link" data-nav-key="registrations" href="{% url 'core:student_dashboard' %}#registrations"><i class="bi bi-check-circle"></i><span>My Registrations</span></a>
+                <a class="nav-link" data-nav-key="dashboard" href="{% url 'core:student_dashboard' %}"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+                <a class="nav-link" data-nav-key="events" href="{% url 'events:event_list' %}"><i class="bi bi-calendar-event"></i><span>Browse Events</span></a>
+                <div class="sidebar-divider"></div>
+                <a class="nav-link" data-nav-key="registrations" href="{% url 'core:student_dashboard' %}#registrations"><i class="bi bi-clipboard-check"></i><span>My Registrations</span></a>
                 <a class="nav-link" data-nav-key="certificates" href="{% url 'core:student_dashboard' %}#certificates"><i class="bi bi-award"></i><span>Certificates</span></a>
             {% elif request.user.role == 'CLUB' %}
-                <a class="nav-link" data-nav-key="dashboard" href="{% url 'core:club_dashboard' %}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+                <a class="nav-link" data-nav-key="dashboard" href="{% url 'core:club_dashboard' %}"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
                 <a class="nav-link" data-nav-key="create-event" href="{% url 'events:event_create' %}"><i class="bi bi-calendar-plus"></i><span>Create Event</span></a>
+                <div class="sidebar-divider"></div>
                 <a class="nav-link" data-nav-key="my-events" href="{% url 'core:club_dashboard' %}#my-events"><i class="bi bi-calendar-week"></i><span>My Events</span></a>
                 <a class="nav-link" data-nav-key="participants" href="{% url 'core:club_dashboard' %}#participants"><i class="bi bi-people"></i><span>Participants</span></a>
-                <a class="nav-link" data-nav-key="analytics" href="{% url 'analytics:club_dashboard' %}"><i class="bi bi-bar-chart"></i><span>Analytics</span></a>
+                <a class="nav-link" data-nav-key="analytics" href="{% url 'analytics:club_dashboard' %}"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
             {% elif request.user.role == 'ADMIN' %}
-                <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' and request.resolver_match.app_name == 'core' %}active{% endif %}" href="{% url 'core:admin_dashboard' %}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
-                <a class="nav-link {% if request.resolver_match.app_name == 'analytics' and request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'analytics:admin_dashboard' %}"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
-                <a class="nav-link" href="/admin/organizations/college/"><i class="bi bi-building"></i><span>Manage Colleges</span></a>
-                <a class="nav-link" href="/admin/organizations/club/"><i class="bi bi-diagram-3"></i><span>Manage Clubs</span></a>
+                <a class="nav-link" data-nav-key="dashboard" href="{% url 'core:admin_dashboard' %}"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+                <a class="nav-link" data-nav-key="analytics" href="{% url 'analytics:admin_dashboard' %}"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
+                <div class="sidebar-divider"></div>
+                <a class="nav-link" href="{% url 'core:admin_users' %}"><i class="bi bi-people"></i><span>Users</span></a>
+                <a class="nav-link" href="{% url 'core:admin_events' %}"><i class="bi bi-calendar-event"></i><span>Events</span></a>
+                <a class="nav-link" href="{% url 'core:admin_certificates' %}"><i class="bi bi-award"></i><span>Certificates</span></a>
+                <div class="sidebar-divider"></div>
+                <a class="nav-link" href="/admin/organizations/college/"><i class="bi bi-building"></i><span>Colleges</span></a>
+                <a class="nav-link" href="/admin/organizations/club/"><i class="bi bi-diagram-3"></i><span>Clubs</span></a>
                 <a class="nav-link" href="/admin/"><i class="bi bi-shield-lock"></i><span>Admin Panel</span></a>
             {% endif %}
         </nav>
+
+        <div class="sidebar-user">
+            {% if request.user.profile_picture %}
+                <img src="{{ request.user.profile_picture.url }}" alt="" class="avatar avatar-image">
+            {% else %}
+                <span class="avatar avatar-placeholder">{{ request.user.username|slice:":1"|upper }}</span>
+            {% endif %}
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
+                <div class="sidebar-user-role">{{ request.user.get_role_display }}</div>
+            </div>
+        </div>
     </aside>
 
+    <!-- ===== Main ===== -->
     <div class="dashboard-main flex-grow-1">
-        <header class="dashboard-header px-3 px-lg-4 py-3 d-flex justify-content-between align-items-center gap-3">
-            <div>
-                <div class="fw-semibold">{{ request.user.get_full_name|default:request.user.username }}</div>
-                <div class="text-muted small">Welcome back to CampusConnect.</div>
+        <header class="dashboard-header px-3 px-lg-4 d-flex justify-content-between align-items-center gap-3" style="min-height:62px">
+            <div class="py-3">
+                <div class="fw-700 truncate" style="font-size:0.9rem;letter-spacing:-0.01em;max-width:300px">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </div>
+                <div style="font-size:0.78rem;color:var(--cc-muted)">Welcome back to CampusConnect</div>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <div class="d-flex align-items-center gap-2 py-3">
+                <button type="button" class="btn-theme-toggle" id="themeToggle" aria-label="Toggle theme">
                     <i class="bi bi-moon-stars"></i>
-                    <span class="d-none d-md-inline">Theme</span>
+                    <span class="d-none d-md-inline" style="font-size:0.82rem">Theme</span>
                 </button>
                 <div class="dropdown">
-                    <button class="btn profile-trigger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="profile-trigger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {% if request.user.profile_picture %}
-                            <img src="{{ request.user.profile_picture.url }}" alt="Profile picture" class="avatar-image">
+                            <img src="{{ request.user.profile_picture.url }}" alt="" class="avatar avatar-image">
                         {% else %}
-                            <span class="avatar-placeholder"><i class="bi bi-person"></i></span>
+                            <span class="avatar avatar-placeholder">{{ request.user.username|slice:":1"|upper }}</span>
                         {% endif %}
-                        <span class="d-none d-md-inline">{{ request.user.username }}</span>
+                        <span class="d-none d-md-inline" style="font-size:0.875rem;font-weight:600">{{ request.user.username }}</span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                        <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person-circle"></i>Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <form method="post" action="{% url 'accounts:logout' %}">
                                 {% csrf_token %}
-                                <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                <button type="submit" class="dropdown-item" style="color:var(--cc-danger)"><i class="bi bi-box-arrow-right"></i>Sign out</button>
                             </form>
                         </li>
                     </ul>
@@ -72,17 +96,15 @@
         </header>
 
         <main class="dashboard-content">
-            <div class="container-fluid px-0">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'debug' %}secondary{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-                {% block dashboard_content %}{% endblock %}
-            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'debug' %}secondary{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show mb-4" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block dashboard_content %}{% endblock %}
         </main>
     </div>
 </div>
@@ -91,69 +113,38 @@
 {% block extra_js %}
 <script>
 (function () {
-    const storageKey = 'campusconnect-theme';
-    const body = document.body;
-    const toggle = document.getElementById('themeToggle');
-
+    var STORAGE_KEY = 'campusconnect-theme';
+    var body = document.body, toggle = document.getElementById('themeToggle');
     function applyTheme(mode) {
-        const dark = mode === 'dark';
+        var dark = mode === 'dark';
         body.classList.toggle('dark-mode', dark);
         if (toggle) {
-            const icon = toggle.querySelector('i');
-            const label = toggle.querySelector('span');
-            if (icon) {
-                icon.className = dark ? 'bi bi-sun' : 'bi bi-moon-stars';
-            }
-            if (label) {
-                label.textContent = dark ? 'Light' : 'Dark';
-            }
+            var icon = toggle.querySelector('i'), label = toggle.querySelector('span');
+            if (icon) icon.className = dark ? 'bi bi-sun' : 'bi bi-moon-stars';
+            if (label) label.textContent = dark ? 'Light' : 'Dark';
         }
     }
-
     function setSidebarActive() {
-        const nav = document.getElementById('sidebarNav');
+        var nav = document.getElementById('sidebarNav');
         if (!nav) return;
-        const items = nav.querySelectorAll('.nav-link[data-nav-key]');
-        items.forEach(item => item.classList.remove('active'));
-
-        const path = window.location.pathname;
-        const hash = window.location.hash;
-        let key = null;
-
-        if (path.includes('/events/')) {
-            key = path.includes('/create/') ? 'create-event' : 'events';
-        } else if (path.includes('/analytics/')) {
-            key = 'analytics';
-        } else if (hash === '#registrations') {
-            key = 'registrations';
-        } else if (hash === '#certificates') {
-            key = 'certificates';
-        } else if (hash === '#my-events') {
-            key = 'my-events';
-        } else if (hash === '#participants') {
-            key = 'participants';
-        } else if (path.includes('/dashboard/')) {
-            key = 'dashboard';
-        }
-
-        if (key) {
-            const activeItem = nav.querySelector(`.nav-link[data-nav-key="${key}"]`);
-            if (activeItem) activeItem.classList.add('active');
-        }
+        nav.querySelectorAll('.nav-link[data-nav-key]').forEach(function(el){ el.classList.remove('active'); });
+        var path = window.location.pathname, hash = window.location.hash, key = null;
+        if (path.includes('/events/')) { key = path.includes('/create/') ? 'create-event' : 'events'; }
+        else if (path.includes('/analytics/')) { key = 'analytics'; }
+        else if (hash === '#registrations') { key = 'registrations'; }
+        else if (hash === '#certificates') { key = 'certificates'; }
+        else if (hash === '#my-events') { key = 'my-events'; }
+        else if (hash === '#participants') { key = 'participants'; }
+        else if (path.includes('/dashboard/')) { key = 'dashboard'; }
+        if (key) { var a = nav.querySelector('.nav-link[data-nav-key="'+key+'"]'); if (a) a.classList.add('active'); }
     }
-
-    const saved = localStorage.getItem(storageKey);
-    applyTheme(saved === 'dark' ? 'dark' : 'light');
+    applyTheme(localStorage.getItem(STORAGE_KEY) === 'dark' ? 'dark' : 'light');
     setSidebarActive();
     window.addEventListener('hashchange', setSidebarActive);
-
-    if (toggle) {
-        toggle.addEventListener('click', function () {
-            const next = body.classList.contains('dark-mode') ? 'light' : 'dark';
-            localStorage.setItem(storageKey, next);
-            applyTheme(next);
-        });
-    }
+    if (toggle) toggle.addEventListener('click', function() {
+        var next = body.classList.contains('dark-mode') ? 'light' : 'dark';
+        localStorage.setItem(STORAGE_KEY, next); applyTheme(next);
+    });
 })();
 </script>
 {% endblock %}

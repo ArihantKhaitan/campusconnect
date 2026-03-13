@@ -5,52 +5,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}CampusConnect{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{% static 'css/app.css' %}" rel="stylesheet">
-    <style>
-        body { min-height: 100vh; display: flex; flex-direction: column; background: #f8f9fa; }
-        main { flex: 1; }
-        .hero-gradient { background: linear-gradient(135deg, #0d6efd, #6f42c1); }
-    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
+
 {% block nav %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<nav class="navbar navbar-expand-lg" style="background:var(--cc-sidebar-bg);border-bottom:1px solid rgba(255,255,255,0.07)">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="{% url 'core:home' %}">CampusConnect</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-            <span class="navbar-toggler-icon"></span>
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-800 text-white" href="{% url 'core:home' %}" style="letter-spacing:-0.03em;font-size:1.1rem;text-decoration:none">
+            <span class="brand-mark"><i class="bi bi-mortarboard-fill"></i></span>
+            CampusConnect
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" style="color:rgba(255,255,255,0.7)">
+            <i class="bi bi-list fs-5"></i>
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
                 {% if not request.user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'events:event_list' %}">Events</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:auth' %}">Auth</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'core:home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'events:event_list' %}">Events</a></li>
                 {% elif request.user.role == 'STUDENT' %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'events:event_list' %}">Events</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'core:student_dashboard' %}#certificates">Certificates</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'events:event_list' %}">Events</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a></li>
                 {% elif request.user.role == 'CLUB' %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'events:event_create' %}">Create Event</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'core:club_dashboard' %}#my-events">My Events</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'analytics:club_dashboard' %}">Analytics</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'events:event_create' %}">Create Event</a></li>
                 {% elif request.user.role == 'ADMIN' %}
-                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'analytics:admin_dashboard' %}">Analytics</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/">Admin Panel</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'accounts:dashboard_redirect' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link fw-500" style="color:rgba(255,255,255,0.6)" href="{% url 'analytics:admin_dashboard' %}">Analytics</a></li>
                 {% endif %}
             </ul>
-            {% if request.user.is_authenticated %}
-                <span class="navbar-text text-light me-3">{{ request.user.username }}</span>
-                <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-                </form>
-            {% endif %}
+            <div class="d-flex align-items-center gap-2">
+                {% if request.user.is_authenticated %}
+                    <span class="small fw-500" style="color:rgba(255,255,255,0.5)">{{ request.user.username }}</span>
+                    <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.15);border-radius:0.5rem;font-weight:500">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'accounts:auth' %}" class="btn btn-sm btn-primary">Sign in</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </nav>
@@ -73,8 +74,8 @@
 {% endblock %}
 
 {% block footer %}
-<footer class="bg-white border-top py-3 mt-auto">
-    <div class="container text-center text-muted small">
+<footer style="background:var(--cc-sidebar-bg);border-top:1px solid rgba(255,255,255,0.07);padding:1.25rem 0;margin-top:auto">
+    <div class="container text-center" style="color:rgba(168,180,208,0.55);font-size:0.82rem">
         CampusConnect &middot; Discover, participate, and celebrate campus life.
     </div>
 </footer>

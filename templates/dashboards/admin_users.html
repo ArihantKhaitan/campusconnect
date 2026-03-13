@@ -1,12 +1,58 @@
 {% extends 'layouts/dashboard_base.html' %}
 {% block title %}Admin Users | CampusConnect{% endblock %}
 {% block dashboard_content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
         <h1 class="mb-1">All Users</h1>
         <p class="text-muted mb-0">System-wide visibility for user accounts.</p>
     </div>
-    <a href="/admin/accounts/user/" class="btn btn-primary">Open Django Admin</a>
+    <a href="/admin/accounts/user/" class="btn btn-primary"><i class="bi bi-shield-lock me-1"></i>Django Admin</a>
 </div>
-<div class="card table-card"><div class="card-body p-0"><div class="table-responsive"><table class="table table-striped table-hover align-middle mb-0"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead><tbody>{% for user in users %}<tr><td>{{ user.get_full_name|default:user.username }}</td><td>{{ user.email|default:'-' }}</td><td><span class="badge status-badge badge-neutral">{{ user.get_role_display }}</span></td><td><a class="btn btn-sm btn-outline-primary" href="/admin/accounts/user/{{ user.id }}/change/">Edit/Delete</a></td></tr>{% endfor %}</tbody></table></div></div></div>
+
+<div class="card table-card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                {% if user.profile_picture %}
+                                    <img src="{{ user.profile_picture.url }}" alt="" class="avatar avatar-image">
+                                {% else %}
+                                    <span class="avatar avatar-placeholder">{{ user.username|slice:":1"|upper }}</span>
+                                {% endif %}
+                                <div>
+                                    <div class="fw-semibold">{{ user.get_full_name|default:user.username }}</div>
+                                    <div class="text-muted small">@{{ user.username }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ user.email|default:'—' }}</td>
+                        <td>
+                            <span class="badge status-badge {% if user.role == 'ADMIN' %}badge-registered{% elif user.role == 'CLUB' %}badge-pending{% else %}badge-attended{% endif %}">
+                                {{ user.get_role_display }}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" href="/admin/accounts/user/{{ user.id }}/change/">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">No users found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

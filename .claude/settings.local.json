@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Bash(wsl -d Ubuntu bash -c \":*)",
+      "Bash(wsl -d:*)"
+    ]
+  }
+}

@@ -1,190 +1,201 @@
 {% extends 'base.html' %}
 
-{% block title %}Auth | CampusConnect{% endblock %}
+{% block title %}Sign In | CampusConnect{% endblock %}
 {% block body_class %}dark-mode{% endblock %}
 {% block nav %}{% endblock %}
 {% block footer %}{% endblock %}
 
 {% block extra_css %}
 <style>
-    .auth-page {
-        min-height: 100vh;
-        background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), transparent 30%), radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.12), transparent 30%), var(--cc-background);
-    }
-    .auth-shell {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        padding: 2rem 0;
-    }
-    .auth-wrapper {
-        border: 1px solid var(--cc-border);
-        overflow: hidden;
-        border-radius: 1.75rem;
-        background: var(--cc-surface);
-    }
-    .auth-branding {
-        background: linear-gradient(160deg, #4F46E5 0%, #6366F1 52%, #22C55E 140%);
-        color: #fff;
-        height: 100%;
-        position: relative;
-    }
-    .auth-branding::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(15,23,42,0.08));
-    }
-    .auth-branding > * { position: relative; z-index: 1; }
-    .auth-branding .badge { background: rgba(255, 255, 255, 0.16); color: #fff; }
-    .auth-pane { background: var(--cc-surface); }
-    .auth-tabs .nav-link {
-        border: 0;
-        color: var(--cc-muted);
-        font-weight: 700;
-        border-radius: 999px;
-        padding: 0.85rem 1rem;
-    }
-    .auth-tabs .nav-link.active {
-        background: linear-gradient(135deg, #4F46E5, #6366F1);
-        color: #fff;
-        box-shadow: 0 0.75rem 1.5rem rgba(79, 70, 229, 0.24);
-    }
-    .role-dependent { display: none; }
-    .role-dependent.show { display: block; }
-    @media (max-width: 991.98px) {
-        .auth-shell { min-height: auto; }
-    }
+.auth-root {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    background: var(--cc-bg);
+}
+@media (max-width: 767px) {
+    .auth-root { grid-template-columns: 1fr; }
+    .auth-brand-col { display: none !important; }
+    .auth-form-col { padding: 2rem 1.25rem; }
+}
+.auth-brand-col {
+    background: var(--cc-sidebar-bg); padding: 3rem;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+}
+.auth-brand-col::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(91,106,240,0.35) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(16,185,129,0.2) 0%, transparent 50%);
+    pointer-events: none;
+}
+.auth-brand-col > * { position: relative; z-index: 1; }
+.auth-logo { display: flex; align-items: center; gap: 0.75rem; color: #fff; text-decoration: none; }
+.auth-logo-mark { width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; background: linear-gradient(135deg, #5B6AF0 0%, #818cf8 100%); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #fff; box-shadow: 0 4px 14px rgba(91,106,240,0.5); }
+.auth-logo-name { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.03em; }
+.auth-hero-text { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 420px; }
+.auth-hero-text h1 { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.04em; color: #fff; line-height: 1.1; margin-bottom: 1.25rem; }
+.auth-hero-text p { color: rgba(168,180,208,0.85); font-size: 1rem; line-height: 1.65; }
+.auth-features { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.75rem; }
+.auth-feature { display: flex; align-items: center; gap: 0.75rem; color: rgba(168,180,208,0.8); font-size: 0.875rem; }
+.auth-feature-dot { width: 1.75rem; height: 1.75rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.dot-indigo { background: rgba(91,106,240,0.25); color: #a5b0f8; }
+.dot-green  { background: rgba(16,185,129,0.2);  color: #6ee7b7; }
+.dot-cyan   { background: rgba(6,182,212,0.2);   color: #67e8f9; }
+.auth-footer-note { color: rgba(168,180,208,0.4); font-size: 0.78rem; }
+.auth-form-col { background: var(--cc-surface); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 3rem 2rem; min-height: 100vh; }
+.auth-form-inner { width: 100%; max-width: 400px; }
+.auth-tab-bar { display: flex; gap: 0.25rem; padding: 0.25rem; background: var(--cc-surface-2); border-radius: 0.75rem; border: 1px solid var(--cc-border); margin-bottom: 2rem; }
+.auth-tab-btn { flex: 1; padding: 0.6rem 1rem; border: none; background: transparent; border-radius: 0.55rem; font-weight: 600; font-size: 0.9rem; color: var(--cc-muted); cursor: pointer; transition: all 0.15s ease; }
+.auth-tab-btn.active { background: var(--cc-primary); color: #fff; box-shadow: 0 2px 8px rgba(91,106,240,0.3); }
+.auth-tab-btn:not(.active):hover { background: var(--cc-border); color: var(--cc-text-2); }
+.auth-section-head { margin-bottom: 1.5rem; }
+.auth-section-head h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.3rem; }
+.auth-section-head p { color: var(--cc-muted); font-size: 0.875rem; }
+.auth-input-group { margin-bottom: 1rem; }
+.auth-btn-submit { width: 100%; padding: 0.7rem; font-weight: 700; font-size: 0.95rem; background: var(--cc-primary); color: #fff; border: none; border-radius: var(--cc-radius-sm); cursor: pointer; transition: all 0.15s ease; box-shadow: 0 2px 8px rgba(91,106,240,0.28); margin-top: 0.5rem; }
+.auth-btn-submit:hover { background: var(--cc-primary-dark); box-shadow: 0 4px 16px rgba(91,106,240,0.38); transform: translateY(-1px); }
+.auth-error-box { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: var(--cc-radius-sm); padding: 0.75rem 1rem; color: #dc2626; font-size: 0.875rem; margin-bottom: 1rem; }
+body.dark-mode .auth-form-col { background: var(--cc-surface); }
+body.dark-mode .auth-section-head h2 { color: var(--cc-text); }
+body.dark-mode .auth-error-box { color: #fca5a5; }
+.role-dependent { display: none; }
+.role-dependent.show { display: block; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="auth-page">
-    <div class="container auth-shell">
-        <div class="row justify-content-center w-100 g-4">
-            <div class="col-12 col-xl-10">
-                <div class="card shadow-lg auth-wrapper">
-                    <div class="row g-0">
-                        <div class="col-lg-6">
-                            <div class="auth-branding p-4 p-md-5 d-flex flex-column justify-content-center">
-                                <span class="badge rounded-pill px-3 py-2 mb-3 align-self-start">Campus life, simplified</span>
-                                <h1 class="display-6 fw-bold mb-3">CampusConnect</h1>
-                                <p class="lead mb-0">Discover events, participate in clubs, and earn certificates.</p>
-                            </div>
+<div class="auth-root">
+    <!-- Left: Branding -->
+    <div class="auth-brand-col">
+        <a href="{% url 'core:home' %}" class="auth-logo">
+            <div class="auth-logo-mark"><i class="bi bi-mortarboard-fill"></i></div>
+            <span class="auth-logo-name">CampusConnect</span>
+        </a>
+        <div class="auth-hero-text">
+            <h1>Your campus,<br>connected.</h1>
+            <p>Discover events, join clubs, track your participation, and earn certificates — all in one place.</p>
+            <div class="auth-features">
+                <div class="auth-feature">
+                    <div class="auth-feature-dot dot-indigo"><i class="bi bi-calendar-event"></i></div>
+                    <span>Discover &amp; register for campus events</span>
+                </div>
+                <div class="auth-feature">
+                    <div class="auth-feature-dot dot-green"><i class="bi bi-award"></i></div>
+                    <span>Earn digital certificates for participation</span>
+                </div>
+                <div class="auth-feature">
+                    <div class="auth-feature-dot dot-cyan"><i class="bi bi-bar-chart-line"></i></div>
+                    <span>Track your involvement with analytics</span>
+                </div>
+            </div>
+        </div>
+        <p class="auth-footer-note">For educational purposes &middot; CampusConnect</p>
+    </div>
+
+    <!-- Right: Forms -->
+    <div class="auth-form-col">
+        <div class="auth-form-inner">
+            <div class="auth-tab-bar">
+                <button class="auth-tab-btn {% if active_tab != 'signup' %}active{% endif %}" onclick="switchAuthTab('login')" type="button">Sign In</button>
+                <button class="auth-tab-btn {% if active_tab == 'signup' %}active{% endif %}" onclick="switchAuthTab('signup')" type="button">Create Account</button>
+            </div>
+
+            <!-- LOGIN -->
+            <div id="pane-login" {% if active_tab == 'signup' %}style="display:none"{% endif %}>
+                <div class="auth-section-head">
+                    <h2>Welcome back</h2>
+                    <p>Sign in to your CampusConnect account.</p>
+                </div>
+                <form method="post" action="{% url 'accounts:login' %}" novalidate>
+                    {% csrf_token %}
+                    {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
+                    {% if login_form.non_field_errors %}
+                        <div class="auth-error-box"><i class="bi bi-exclamation-circle me-1"></i>{{ login_form.non_field_errors|join:', ' }}</div>
+                    {% endif %}
+                    <div class="auth-input-group">
+                        <label class="form-label" for="id_login_username">Username</label>
+                        <input type="text" name="username" id="id_login_username" value="{{ login_form.username.value|default:'' }}" class="form-control{% if login_form.username.errors %} is-invalid{% endif %}" placeholder="Your username" autocomplete="username" autofocus>
+                        {% if login_form.username.errors %}<div class="invalid-feedback d-block">{{ login_form.username.errors|join:', ' }}</div>{% endif %}
+                    </div>
+                    <div class="auth-input-group">
+                        <label class="form-label" for="id_login_password">Password</label>
+                        <input type="password" name="password" id="id_login_password" class="form-control{% if login_form.password.errors %} is-invalid{% endif %}" placeholder="Your password" autocomplete="current-password">
+                        {% if login_form.password.errors %}<div class="invalid-feedback d-block">{{ login_form.password.errors|join:', ' }}</div>{% endif %}
+                    </div>
+                    <button type="submit" class="auth-btn-submit"><i class="bi bi-box-arrow-in-right me-1"></i> Sign In</button>
+                </form>
+                <p class="text-center mt-3 mb-0" style="font-size:.875rem;color:var(--cc-muted)">
+                    No account? <a href="#" onclick="switchAuthTab('signup');return false" style="color:var(--cc-primary);font-weight:600">Create one</a>
+                </p>
+            </div>
+
+            <!-- SIGNUP -->
+            <div id="pane-signup" {% if active_tab != 'signup' %}style="display:none"{% endif %}>
+                <div class="auth-section-head">
+                    <h2>Create account</h2>
+                    <p>Join CampusConnect and get started.</p>
+                </div>
+                <form method="post" action="{% url 'accounts:signup' %}" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {% if signup_form.non_field_errors %}
+                        <div class="auth-error-box"><i class="bi bi-exclamation-circle me-1"></i>{{ signup_form.non_field_errors|join:', ' }}</div>
+                    {% endif %}
+                    <div class="row g-2 mb-3">
+                        <div class="col-7">
+                            <label class="form-label" for="id_signup_username">Username</label>
+                            <input type="text" name="username" id="id_signup_username" value="{{ signup_form.username.value|default:'' }}" class="form-control{% if signup_form.username.errors %} is-invalid{% endif %}" placeholder="Choose username" autocomplete="username">
+                            {% if signup_form.username.errors %}<div class="invalid-feedback d-block">{{ signup_form.username.errors|join:', ' }}</div>{% endif %}
                         </div>
-                        <div class="col-lg-6">
-                            <div class="auth-pane p-4 p-md-5">
-                                <ul class="nav nav-pills nav-fill auth-tabs mb-4" id="authTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link {% if active_tab != 'signup' %}active{% endif %}" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab" aria-controls="login-pane" aria-selected="{% if active_tab != 'signup' %}true{% else %}false{% endif %}">Login</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link {% if active_tab == 'signup' %}active{% endif %}" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup-pane" type="button" role="tab" aria-controls="signup-pane" aria-selected="{% if active_tab == 'signup' %}true{% else %}false{% endif %}">Sign Up</button>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content" id="authTabContent">
-                                    <div class="tab-pane fade {% if active_tab != 'signup' %}show active{% endif %}" id="login-pane" role="tabpanel" aria-labelledby="login-tab" tabindex="0">
-                                        <div class="mb-4">
-                                            <h2 class="h4 mb-2">Welcome back</h2>
-                                            <p class="text-muted mb-0">Sign in to access your CampusConnect dashboard.</p>
-                                        </div>
-                                        <form method="post" action="{% url 'accounts:login' %}" novalidate>
-                                            {% csrf_token %}
-                                            {% if login_form.non_field_errors %}
-                                                <div class="alert alert-danger">{{ login_form.non_field_errors }}</div>
-                                            {% endif %}
-                                            <div class="mb-3">
-                                                <label class="form-label" for="id_login_username">Username</label>
-                                                <input type="text" name="username" value="{{ login_form.username.value|default:'' }}" autofocus class="form-control{% if login_form.username.errors %} is-invalid{% endif %}" id="id_login_username" placeholder="Username">
-                                                {% if login_form.username.errors %}<div class="invalid-feedback d-block">{{ login_form.username.errors|join:', ' }}</div>{% endif %}
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label" for="id_login_password">Password</label>
-                                                <input type="password" name="password" class="form-control{% if login_form.password.errors %} is-invalid{% endif %}" id="id_login_password" placeholder="Password">
-                                                {% if login_form.password.errors %}<div class="invalid-feedback d-block">{{ login_form.password.errors|join:', ' }}</div>{% endif %}
-                                            </div>
-                                            <div class="d-grid">
-                                                <button type="submit" class="btn btn-primary btn-lg">Login</button>
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                    <div class="tab-pane fade {% if active_tab == 'signup' %}show active{% endif %}" id="signup-pane" role="tabpanel" aria-labelledby="signup-tab" tabindex="0">
-                                        <div class="mb-4">
-                                            <h2 class="h4 mb-2">Create your account</h2>
-                                            <p class="text-muted mb-0">Join CampusConnect to explore events and track participation.</p>
-                                        </div>
-                                        <form method="post" action="{% url 'accounts:signup' %}" enctype="multipart/form-data" novalidate>
-                                            {% csrf_token %}
-                                            {% if signup_form.non_field_errors %}
-                                                <div class="alert alert-danger">{{ signup_form.non_field_errors }}</div>
-                                            {% endif %}
-                                            <div class="row g-3">
-                                                <div class="col-md-6">
-                                                    <label class="form-label" for="id_signup_username">Username</label>
-                                                    <input type="text" name="username" value="{{ signup_form.username.value|default:'' }}" class="form-control{% if signup_form.username.errors %} is-invalid{% endif %}" id="id_signup_username" placeholder="Username">
-                                                    {% if signup_form.username.errors %}<div class="invalid-feedback d-block">{{ signup_form.username.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label" for="id_signup_role">Role</label>
-                                                    <select name="role" class="form-select{% if signup_form.role.errors %} is-invalid{% endif %}" id="id_signup_role">
-                                                        <option value="STUDENT" {% if signup_form.role.value == 'STUDENT' %}selected{% endif %}>Student</option>
-                                                        <option value="CLUB" {% if signup_form.role.value == 'CLUB' %}selected{% endif %}>Club Representative</option>
-                                                    </select>
-                                                    {% if signup_form.role.errors %}<div class="invalid-feedback d-block">{{ signup_form.role.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6 role-dependent student-only">
-                                                    <label class="form-label" for="id_signup_first_name">First Name</label>
-                                                    <input type="text" name="first_name" value="{{ signup_form.first_name.value|default:'' }}" class="form-control{% if signup_form.first_name.errors %} is-invalid{% endif %}" id="id_signup_first_name" placeholder="First name">
-                                                    {% if signup_form.first_name.errors %}<div class="invalid-feedback d-block">{{ signup_form.first_name.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6 role-dependent student-only">
-                                                    <label class="form-label" for="id_signup_last_name">Last Name</label>
-                                                    <input type="text" name="last_name" value="{{ signup_form.last_name.value|default:'' }}" class="form-control{% if signup_form.last_name.errors %} is-invalid{% endif %}" id="id_signup_last_name" placeholder="Last name">
-                                                    {% if signup_form.last_name.errors %}<div class="invalid-feedback d-block">{{ signup_form.last_name.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6 role-dependent club-only">
-                                                    <label class="form-label" for="id_signup_college">College</label>
-                                                    <input type="text" name="college" value="{{ signup_form.college.value|default:'' }}" class="form-control{% if signup_form.college.errors %} is-invalid{% endif %}" id="id_signup_college" placeholder="College name">
-                                                    {% if signup_form.college.errors %}<div class="invalid-feedback d-block">{{ signup_form.college.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6 role-dependent club-only">
-                                                    <label class="form-label" for="id_signup_club_name">Club Name</label>
-                                                    <input type="text" name="club_name" value="{{ signup_form.club_name.value|default:'' }}" class="form-control{% if signup_form.club_name.errors %} is-invalid{% endif %}" id="id_signup_club_name" placeholder="Club name">
-                                                    {% if signup_form.club_name.errors %}<div class="invalid-feedback d-block">{{ signup_form.club_name.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label" for="id_signup_email">Email</label>
-                                                    <input type="email" name="email" value="{{ signup_form.email.value|default:'' }}" class="form-control{% if signup_form.email.errors %} is-invalid{% endif %}" id="id_signup_email" placeholder="Email address">
-                                                    {% if signup_form.email.errors %}<div class="invalid-feedback d-block">{{ signup_form.email.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label" for="id_signup_profile_picture">Profile Picture</label>
-                                                    <input type="file" name="profile_picture" class="form-control{% if signup_form.profile_picture.errors %} is-invalid{% endif %}" id="id_signup_profile_picture" accept="image/*">
-                                                    {% if signup_form.profile_picture.errors %}<div class="invalid-feedback d-block">{{ signup_form.profile_picture.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label" for="id_signup_password1">Password</label>
-                                                    <input type="password" name="password1" class="form-control{% if signup_form.password1.errors %} is-invalid{% endif %}" id="id_signup_password1" placeholder="Password">
-                                                    {% if signup_form.password1.errors %}<div class="invalid-feedback d-block">{{ signup_form.password1.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label" for="id_signup_password2">Confirm Password</label>
-                                                    <input type="password" name="password2" class="form-control{% if signup_form.password2.errors %} is-invalid{% endif %}" id="id_signup_password2" placeholder="Confirm password">
-                                                    {% if signup_form.password2.errors %}<div class="invalid-feedback d-block">{{ signup_form.password2.errors|join:', ' }}</div>{% endif %}
-                                                </div>
-                                            </div>
-                                            <div class="d-grid mt-4">
-                                                <button type="submit" class="btn btn-primary btn-lg">Sign Up</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-5">
+                            <label class="form-label" for="id_signup_role">I am a</label>
+                            <select name="role" id="id_signup_role" class="form-select{% if signup_form.role.errors %} is-invalid{% endif %}">
+                                <option value="STUDENT" {% if signup_form.role.value == 'STUDENT' or not signup_form.role.value %}selected{% endif %}>Student</option>
+                                <option value="CLUB" {% if signup_form.role.value == 'CLUB' %}selected{% endif %}>Club Rep</option>
+                            </select>
                         </div>
                     </div>
-                </div>
+                    <div class="row g-2 mb-3 role-dependent student-only show">
+                        <div class="col-6">
+                            <label class="form-label" for="id_signup_first_name">First name</label>
+                            <input type="text" name="first_name" id="id_signup_first_name" value="{{ signup_form.first_name.value|default:'' }}" class="form-control" placeholder="First name">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" for="id_signup_last_name">Last name</label>
+                            <input type="text" name="last_name" id="id_signup_last_name" value="{{ signup_form.last_name.value|default:'' }}" class="form-control" placeholder="Last name">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3 role-dependent club-only">
+                        <div class="col-6">
+                            <label class="form-label" for="id_signup_college">College</label>
+                            <input type="text" name="college" id="id_signup_college" value="{{ signup_form.college.value|default:'' }}" class="form-control{% if signup_form.college.errors %} is-invalid{% endif %}" placeholder="College name">
+                            {% if signup_form.college.errors %}<div class="invalid-feedback d-block">{{ signup_form.college.errors|join:', ' }}</div>{% endif %}
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" for="id_signup_club_name">Club</label>
+                            <input type="text" name="club_name" id="id_signup_club_name" value="{{ signup_form.club_name.value|default:'' }}" class="form-control{% if signup_form.club_name.errors %} is-invalid{% endif %}" placeholder="Club name">
+                            {% if signup_form.club_name.errors %}<div class="invalid-feedback d-block">{{ signup_form.club_name.errors|join:', ' }}</div>{% endif %}
+                        </div>
+                    </div>
+                    <div class="auth-input-group">
+                        <label class="form-label" for="id_signup_email">Email</label>
+                        <input type="email" name="email" id="id_signup_email" value="{{ signup_form.email.value|default:'' }}" class="form-control{% if signup_form.email.errors %} is-invalid{% endif %}" placeholder="your@email.com">
+                        {% if signup_form.email.errors %}<div class="invalid-feedback d-block">{{ signup_form.email.errors|join:', ' }}</div>{% endif %}
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label" for="id_signup_password1">Password</label>
+                            <input type="password" name="password1" id="id_signup_password1" class="form-control{% if signup_form.password1.errors %} is-invalid{% endif %}" placeholder="Min 8 chars" autocomplete="new-password">
+                            {% if signup_form.password1.errors %}<div class="invalid-feedback d-block">{{ signup_form.password1.errors|join:', ' }}</div>{% endif %}
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label" for="id_signup_password2">Confirm</label>
+                            <input type="password" name="password2" id="id_signup_password2" class="form-control{% if signup_form.password2.errors %} is-invalid{% endif %}" placeholder="Repeat" autocomplete="new-password">
+                            {% if signup_form.password2.errors %}<div class="invalid-feedback d-block">{{ signup_form.password2.errors|join:', ' }}</div>{% endif %}
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn-submit"><i class="bi bi-person-plus me-1"></i> Create Account</button>
+                </form>
+                <p class="text-center mt-3 mb-0" style="font-size:.875rem;color:var(--cc-muted)">
+                    Already have an account? <a href="#" onclick="switchAuthTab('login');return false" style="color:var(--cc-primary);font-weight:600">Sign in</a>
+                </p>
             </div>
         </div>
     </div>
@@ -193,19 +204,27 @@
 
 {% block extra_js %}
 <script>
-(function () {
-    const roleSelect = document.getElementById('id_signup_role');
-    const studentFields = document.querySelectorAll('.student-only');
-    const clubFields = document.querySelectorAll('.club-only');
-
-    function updateSignupRoleFields() {
-        const role = roleSelect ? roleSelect.value : 'STUDENT';
-        studentFields.forEach(el => el.classList.toggle('show', role === 'STUDENT'));
-        clubFields.forEach(el => el.classList.toggle('show', role === 'CLUB'));
+function switchAuthTab(tab) {
+    var lp = document.getElementById('pane-login'), sp = document.getElementById('pane-signup');
+    var btns = document.querySelectorAll('.auth-tab-btn');
+    if (tab === 'login') {
+        lp.style.display = ''; sp.style.display = 'none';
+        btns[0].classList.add('active'); btns[1].classList.remove('active');
+    } else {
+        lp.style.display = 'none'; sp.style.display = '';
+        btns[0].classList.remove('active'); btns[1].classList.add('active');
     }
-
-    updateSignupRoleFields();
-    if (roleSelect) roleSelect.addEventListener('change', updateSignupRoleFields);
+}
+(function() {
+    var sel = document.getElementById('id_signup_role');
+    var sf = document.querySelectorAll('.student-only'), cf = document.querySelectorAll('.club-only');
+    function update() {
+        var r = sel ? sel.value : 'STUDENT';
+        sf.forEach(function(e){ e.classList.toggle('show', r==='STUDENT'); });
+        cf.forEach(function(e){ e.classList.toggle('show', r==='CLUB'); });
+    }
+    update();
+    if (sel) sel.addEventListener('change', update);
 })();
 </script>
 {% endblock %}

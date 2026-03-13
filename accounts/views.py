@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.generic import CreateView, TemplateView
 
 from .forms import LoginForm, ProfileEditForm, ProfileSetupForm, SignupForm
@@ -11,6 +12,11 @@ from .models import User
 
 class AuthPageView(TemplateView):
     template_name = "accounts/auth.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("accounts:dashboard_redirect")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,7 +39,10 @@ class CampusLoginView(LoginView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy("accounts:dashboard_redirect")
+        next_url = self.request.POST.get("next") or self.request.GET.get("next")
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={self.request.get_host()}):
+            return next_url
+        return str(reverse_lazy("accounts:dashboard_redirect"))
 
 
 class SignupView(CreateView):
@@ -53,16 +62,10 @@ class SignupView(CreateView):
             return redirect("accounts:dashboard_redirect")
         return super().dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if self.request.method in ("POST", "PUT"):
-            kwargs["files"] = self.request.FILES
-        return kwargs
-
     def form_valid(self, form):
-        response = super().form_valid(form)
-        login(self.request, self.object)
-        return response
+        user = form.save()
+        login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
+        return redirect(self.success_url)
 
 
 class CampusLogoutView(LogoutView):
