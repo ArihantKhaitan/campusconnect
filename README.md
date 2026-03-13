@@ -1,6 +1,6 @@
 # CampusConnect
 
-A full-stack college event management platform built with Django. Students can browse and register for events, clubs manage their events and attendance, and admins oversee the entire platform — with automatic PDF certificate generation on completion.
+A full-stack college event management platform built with Django. Students can browse and register for events, clubs manage their events and attendance, and admins oversee the entire platform with automatic PDF certificate generation on completion.
 
 ---
 
